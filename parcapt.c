@@ -288,10 +288,13 @@ int main(int argc, char** argv)
 //    exit(CUPS_BACKEND_FAILED);
 // Copy input file to tmp buffer
   while(!feof(stdin)){
-  	BYTE bTmpByte=0;
-  	int dBytesRead=fread(&bTmpByte,sizeof(bTmpByte),1,stdin);
-  	dBytesRead=fwrite(&bTmpByte,sizeof(bTmpByte),1,fdTmpInputFile);
-  	dByteCiunterForstdin+=dBytesRead;
+    char buffer[4096];
+    int dBytesRead = fread(buffer, 1, sizeof(buffer), stdin);
+    dByteCiunterForstdin += dBytesRead;
+    while (dBytesRead > 0) {
+      int dBytesWritten = fwrite(buffer, 1, dBytesRead, fdTmpInputFile);
+      dBytesRead -= dBytesWritten;
+    }
   }
     fprintf(stderr, "parcapt:main I had got %d bytes from stdin \n",dByteCiunterForstdin);  
 //    exit(CUPS_BACKEND_FAILED);    
