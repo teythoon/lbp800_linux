@@ -228,17 +228,14 @@ int main(int argc, char** argv)
   // HANDLE AL DEVICE parport(n)
   int Device=0;
 
-  // NOME DEL FILE DEL DEVICE
-  char DeviceName[255] = "/dev/parport0";
-
   // SE CHIAMATO SENZA PARAMETRI, STAMPA SU stdout L' ELENCO DELLE STAMPANTI TROVATE
   if(argc == 1)
   {
     char i;
     for(i = 0; i < 4; i++)
     {
-//      DeviceName[strlen(DeviceName)-1] = i + '0';
-      sprintf (DeviceName,"/dev/parport%1d",i);
+      char DeviceName[15];
+      sprintf (DeviceName, "/dev/parport%1d", i);
       if(HasLBP800(DeviceName)) // parcapt
         printf("direct parcapt:/dev/parport%1d \"CANON-LBP800\" \"CANON-LBP800 on parport%1d\"\n", i, i);
     }
@@ -247,12 +244,12 @@ int main(int argc, char** argv)
 
   // LEGGE IL NOME DEL DEVICE DA argv[0], SE PRESENTE LA STRINGA "parcapt:",
   // ALTRIMENTI SI TRATTA DI UNA CHIAMATA DI TEST QUINDI LEGGE IL DEVICE DA argv[1]
-  if(!strncmp(argv[0], "parcapt:", strlen("parcapt:"))){
-    strncpy(DeviceName, argv[0]+strlen("parcapt:"), 254);
-    }
-  else{
-    strncpy(DeviceName, argv[1], 254);
-    }
+  char *DeviceName;
+  if (strncmp(argv[1], "parcapt:", 8) == 0) {
+    DeviceName = argv[1] + 8;
+  } else {
+    DeviceName = argv[1];
+  }
 
   // APRE IL DEVICE
   Device = Parport_Open(DeviceName);
