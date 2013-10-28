@@ -55,7 +55,7 @@ void Bitmap_GetLine(TSourceBitmap *Bitmap, BYTE *LinePtr)
 {
   int BytesToRead=0, BytesLeft=0;
   int i=0;
-  int dTmp=0;
+
   // AZZERA IL BUFFER
   memset(LinePtr, 0x00, BYTES_BY_LINE);
 
@@ -74,7 +74,12 @@ void Bitmap_GetLine(TSourceBitmap *Bitmap, BYTE *LinePtr)
   }
 
   // LEGGE LA LINEA
-  dTmp=fread(LinePtr, BytesToRead, 1, Bitmap->Bitmapf);
+  char *ptr = LinePtr;
+  while (BytesToRead > 0) {
+    size_t BytesRead = fread(ptr, 1, BytesToRead, Bitmap->Bitmapf);
+    ptr += BytesRead;
+    BytesToRead -= BytesRead;
+  }
 
   // @@@@ HACK -- UN CODICE PIXEL A 43 NON E' AMMESSO
   // @@@@ PERCHE' MANDA IN PALLA IL SISTEMA DI CODIFICA XOR
