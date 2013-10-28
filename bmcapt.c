@@ -41,17 +41,12 @@
 void Bitmap_Skip (FILE *Bitmapf, int Offset)
 {
   BYTE Dummy[256]={0};
-  int dTmp=0;
-  if(!Offset)
-    return ;
 
-  while (Offset > sizeof(Dummy))
+  while (Offset > 0)
   {
-    dTmp=fread(Dummy, 1, sizeof(Dummy), Bitmapf);
-    Offset -= sizeof(Dummy);
+    size_t bytes_read = fread(Dummy, 1, sizeof(Dummy), Bitmapf);
+    Offset -= bytes_read;
   }
-  dTmp=fread(Dummy, 1, Offset, Bitmapf);
-
 } // END Bitmap_Skip()
 
 ////////////////////////////////////////////////////////////////
